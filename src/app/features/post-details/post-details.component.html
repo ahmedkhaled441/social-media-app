@@ -1,0 +1,57 @@
+<section class="container w-6xl mx-auto">
+
+  <!-- post content  -->
+<div class="text-[15px] text-slate-900 mb-4">
+  <p>{{postData().body}}</p>
+  <img
+    [src]="postData().image"
+    class="w-full max-h-90 object-cover rounded shadow mt-2"
+    alt=""
+  />
+</div>
+
+<!-- like share comments  counts & view details -->
+<div class="flex items-center justify-between text-[13px] text-slate-500 mb-3 px-1">
+  <div class="flex items-center gap-1.5 cursor-pointer hover:underline">
+    <div
+      class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xs"
+    >
+      <i class="fa-solid fa-thumbs-up"></i>
+    </div>
+    <span>{{postData().likesCount}}</span>
+  </div>
+  <div class="flex items-center gap-3">
+    <span class="cursor-pointer hover:underline">{{postData().sharesCount}}</span>
+    <span class="cursor-pointer hover:underline">{{postData().commentsCount}}</span>
+  </div>
+</div>
+
+<hr class="border-t border-slate-200 mb-1" />
+
+<!-- buttons like - comment - share -->
+<div class="flex items-center justify-between px-1 py-1">
+  <button
+    class="flex-1 cursor-pointer flex items-center justify-center gap-2 text-slate-600 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors"
+  >
+    <i class="fa-regular fa-thumbs-up text-lg"></i>
+    Like
+  </button>
+  <button
+    class="flex-1 flex cursor-pointer items-center justify-center gap-2 text-slate-600 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors"
+  >
+    <i class="fa-regular fa-message text-lg"></i>
+    Comment
+  </button>
+  <button
+    class="flex-1 flex cursor-pointer items-center justify-center gap-2 text-slate-600 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors"
+  >
+    <i class="fa-solid fa-share text-lg"></i>
+    Share
+  </button>
+</div>
+
+<hr class="border-t border-slate-200 mt-1 mb-4" />
+
+
+
+</section>

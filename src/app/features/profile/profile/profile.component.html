@@ -1,0 +1,251 @@
+<div class="space-y-5 sm:space-y-6">
+  <!-- Profile Header Card (Cover & Info) -->
+  <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-[0_2px_10px_rgba(15,23,42,.06)] sm:rounded-[28px]">
+    <!-- Cover Photo Banner -->
+
+<!-- Cover Photo Banner -->
+<div
+  class="group/cover relative h-44 bg-[linear-gradient(112deg,#0f172a_0%,#1e3a5f_36%,#2b5178_72%,#5f8fb8_100%)] sm:h-52 lg:h-60"
+  [style.background-image]="coverPreview() ? 'url(' + coverPreview() + ')' : null"
+  [style.background-size]="coverPreview() ? 'cover' : null"
+  [style.background-position]="coverPreview() ? 'center' : null"
+>
+  <div class="absolute inset-0 bg-black/10"></div>
+
+  <!-- Change Cover Action -->
+  <div
+    class="absolute right-2 top-2 z-10 flex items-center gap-2 sm:right-3 sm:top-3"
+  >
+    <label
+      class="inline-flex cursor-pointer items-center gap-2 rounded-lg bg-black/50 px-3 py-2 text-xs font-bold text-white backdrop-blur transition hover:bg-black/70"
+    >
+      <i class="fa-solid fa-camera"></i>
+      <span>Change cover</span>
+
+      <input
+        accept="image/*"
+        class="hidden"
+        type="file"
+        (change)="onCoverSelected($event)"
+      />
+    </label>
+  </div>
+</div>
+
+
+    <!-- Profile Details Container -->
+    <div class="relative -mt-12 px-3 pb-5 sm:-mt-16 sm:px-8 sm:pb-6">
+      <div class="rounded-3xl border border-white/60 bg-white/92 p-5 backdrop-blur-xl sm:p-7">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <!-- Left: Avatar & Identity -->
+          <div class="min-w-0">
+            <div class="flex items-end gap-4">
+              <!-- Avatar with action buttons -->
+              <div class="group/avatar relative shrink-0">
+                <button type="button" class="cursor-zoom-in rounded-full">
+                  <img
+                    alt="Profile Avatar"
+                    class="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md ring-2 ring-[#dbeafe]"
+                    [src]="userProfile()?.photo || 'https://pub-3cba56bacf9f4965bbb0989e07dada12.r2.dev/linkedPosts/default-profile.png'"
+                  />
+                </button>
+                <button
+                  type="button"
+                  class="absolute bottom-1 left-1 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-white text-[#1877f2] opacity-100 shadow-sm ring-1 ring-slate-200 transition duration-200 hover:bg-slate-50 sm:opacity-0 sm:group-hover/avatar:opacity-100 sm:group-focus-within/avatar:opacity-100"
+                  title="View profile photo"
+                  aria-label="View profile photo"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-expand">
+                    <path d="m15 15 6 6"></path>
+                    <path d="m15 9 6-6"></path>
+                    <path d="M21 16v5h-5"></path>
+                    <path d="M21 8V3h-5"></path>
+                    <path d="M3 16v5h5"></path>
+                    <path d="m3 21 6-6"></path>
+                    <path d="M3 8V3h5"></path>
+                    <path d="M9 9 3 3"></path>
+                  </svg>
+                </button>
+                <label
+                  class="absolute bottom-1 right-1 flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-[#1877f2] text-white opacity-100 shadow-sm transition duration-200 hover:bg-[#166fe5] sm:opacity-0 sm:group-hover/avatar:opacity-100 sm:group-focus-within/avatar:opacity-100"
+                  title="Change avatar photo"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera">
+                    <path d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z"></path>
+                    <circle cx="12" cy="13" r="3"></circle>
+                  </svg>
+                  <input accept="image/*" (change)="onFileUpload($event)"  class="hidden" type="file">
+                </label>
+              </div>
+
+              <!-- Name & Member Badge -->
+              <div class="min-w-0 pb-1">
+                <h2 class="truncate text-2xl font-black tracking-tight text-slate-900 sm:text-4xl">{{ userProfile()?.name}}</h2>
+                <p class="mt-1 text-lg font-semibold text-slate-500 sm:text-xl">&#64;{{ userProfile()?.username }}</p>
+                <div class="mt-3 inline-flex items-center gap-2 rounded-full border border-[#d7e7ff] bg-[#eef6ff] px-3 py-1 text-xs font-bold text-[#0b57d0]">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                    <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                  </svg>
+                  Route Posts member
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Counters (Followers, Following, Bookmarks) -->
+          <div class="grid w-full grid-cols-3 gap-2 lg:w-[520px]">
+            <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+              <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Followers</p>
+              <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">0</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+              <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Following</p>
+              <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">{{ userProfile()?.followingCount }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white px-3 py-3 text-center sm:px-4 sm:py-4">
+              <p class="text-[11px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">Bookmarks</p>
+              <p class="mt-1 text-2xl font-black text-slate-900 sm:text-3xl">0</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bio / About & Post Summary -->
+        <div class="mt-5 grid gap-4 lg:grid-cols-[1.3fr_.7fr]">
+          <button
+  routerLink="/change-password"
+  class="inline-flex items-center gap-2 text-blue-600 cursor-pointer hover:text-blue-700 font-semibold"
+>
+  <i class="fa-solid fa-lock"></i>
+  Change Password
+</button>
+          <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <h3 class="text-sm font-extrabold text-slate-800">About</h3>
+            <div class="mt-3 space-y-2 text-sm text-slate-600">
+              <p class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail text-slate-500">
+                  <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path>
+                  <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                </svg>
+                <span>{{ userProfile()?.email }}</span>
+              </p>
+              <p class="flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users text-slate-500">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <path d="M16 3.128a4 4 0 0 1 0 7.744"></path>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                </svg>
+                <span>Active on Route Posts</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            <div class="rounded-2xl border border-[#dbeafe] bg-[#f6faff] px-4 py-3">
+              <p class="text-xs font-bold uppercase tracking-wide text-[#1f4f96]">My posts</p>
+              <p class="mt-1 text-2xl font-black text-slate-900">{{ myPosts().length }}</p>
+            </div>
+            <div class="rounded-2xl border border-[#dbeafe] bg-[#f6faff] px-4 py-3">
+              <p class="text-xs font-bold uppercase tracking-wide text-[#1f4f96]">Saved posts</p>
+              <p class="mt-1 text-2xl font-black text-slate-900">{{savedPosts().length }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- User Posts Section -->
+  <section class="space-y-4">
+    <!-- Filter Switcher (My Posts / Saved) -->
+    <div class="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+      <div class="grid w-full grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1.5 sm:inline-flex sm:w-auto sm:gap-0">
+
+        <button
+        type="button"
+        (click)="selectTab('posts')"
+        class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition"
+        [class.bg-white]="activeTab() === 'posts'"
+        [class.text-[#1877f2]]="activeTab() === 'posts'"
+        [class.shadow-sm]="activeTab() === 'posts'"
+        [class.text-slate-600]="activeTab() !== 'posts'"
+      >
+        My Posts
+        <span>{{ myPosts().length }}</span>
+      </button>
+
+      <button
+        type="button"
+        (click)="selectTab('saved')"
+        class="inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition"
+        [class.bg-white]="activeTab() === 'saved'"
+        [class.text-[#1877f2]]="activeTab() === 'saved'"
+        [class.shadow-sm]="activeTab() === 'saved'"
+        [class.text-slate-600]="activeTab() !== 'saved'"
+      >
+        Saved
+        <span>{{ savedPosts().length }}</span>
+      </button>
+
+      </div>
+
+      <span class="rounded-full bg-[#e7f3ff] px-3 py-1 text-xs font-bold text-[#1877f2]">0</span>
+    </div>
+
+
+    <div class="space-y-3">
+      @if (loadingPosts()) {
+        <p class="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-500">
+          Loading posts...
+        </p>
+      } @else if (displayedPosts().length === 0) {
+        <p class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-500">
+          @if (activeTab() === 'posts') {
+            You have not posted yet.
+          } @else {
+            You have no saved posts yet.
+          }
+        </p>
+      } @else {
+        @for (post of displayedPosts(); track post._id) {
+          <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div class="flex items-center gap-3">
+              <img
+                [src]="post.user.photo"
+                [alt]="post.user.name"
+                class="h-10 w-10 rounded-full object-cover"
+              />
+
+              <div>
+                <p class="font-bold text-slate-900">
+                  {{ post.user.name }}
+                </p>
+                <p class="text-sm text-slate-500">
+                  &#64;{{ post.user.username }}
+                </p>
+              </div>
+            </div>
+
+            @if (post.body) {
+              <p class="mt-3 whitespace-pre-wrap text-slate-800">
+                {{ post.body }}
+              </p>
+            }
+
+            @if (post.image) {
+              <img
+                [src]="post.image"
+                alt="Post image"
+                class="mt-3 max-h-[500px] w-full rounded-xl object-contain"
+              />
+            }
+          </article>
+        }
+      }
+    </div>
+
+  </section>
+</div>

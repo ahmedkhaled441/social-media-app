@@ -1,0 +1,326 @@
+<form  #createForm (submit)="createPost($event,createForm)">
+  <div
+  class="w-full bg-white rounded-[16px] shadow-sm border border-slate-200 p-4 font-sans flex flex-col"
+>
+  <div class="flex items-center gap-3 mb-3">
+    <img
+      [src]="loggedUserData().photo"
+      [alt]="loggedUserData().name"
+      class="w-10 h-10 rounded-full object-cover shrink-0 bg-slate-100 border border-slate-50"
+    />
+
+    <div>
+      <span class="text-[15px] font-bold text-slate-900 leading-tight">{{loggedUserData().name}}</span>
+
+      <div
+        class="flex p-1 w-fit items-center bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
+      >
+        <i class="fa-solid fa-earth-americas text-[11px] text-slate-600"></i>
+
+        <select [formControl]="PostPrivacy"
+         class="border-none bg-transparent cursor-pointer ring-0 py-0 px-2 text-xs">
+          <option value="public">public</option>
+          <option value="following">followers</option>
+          <option value="only_me">only me</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <textarea [formControl]="PostBody"
+      class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-[15px] text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-blue-50 focus:border-blue-300 transition-all resize-y min-h-30"
+      placeholder="What's on your mind...?"
+      aria-label="Create a new post"
+    ></textarea>
+  </div>
+@if (imgUrl()) {
+  <div class="file-reader">
+    <img [src]="imgUrl()" alt="">
+  </div>
+}
+  <hr class="border-t border-slate-800 mb-4" />
+  <div class="flex items-center justify-between">
+    <input (change)="preparedUploadedFile($event)" type="file" id="file" class="hidden" />
+    <label
+      for="file"
+      class="flex cursor-pointer items-center gap-2 text-slate-600 hover:bg-slate-50 px-2 py-1.5 rounded-lg transition-colors group"
+    >
+      <i
+        class="fa-regular fa-image text-[#22c55e] text-[1.1rem] group-hover:scale-110 transition-transform"
+      ></i>
+      <span class="text-[14px] font-semibold text-slate-600">Photo/video</span>
+    </label>
+
+    <button
+      class="cursor-pointer bg-blue-500 text-white px-5 py-2 rounded-lg font-bold text-[14px] flex items-center gap-2 focus:ring-4 focus:ring-blue-200 outline-none"
+    >
+      Post
+      <i class="fa-regular fa-paper-plane text-sm"></i>
+    </button>
+  </div>
+</div>
+</form>
+@for (post of allPosts(); track post._id) {
+  <div class="bg-white rounded-[16px] my-3 shadow-sm border border-slate-200 p-4 font-sans">
+    <!-- user details  -->
+    <div class="flex items-start justify-between mb-3">
+      <div class="flex items-center gap-3">
+        <img
+          [src]="post.user.photo"
+          [alt]="post.user.name"
+          class="size-10 rounded-full object-cover shrink-0 bg-slate-100 border border-slate-50"
+        />
+
+        <div>
+          <span
+            class="text-[15px] font-bold text-slate-900 leading-tight hover:underline cursor-pointer"
+            >{{post.user.name}}</span
+          >
+          <div class="flex items-center text-[13px] text-slate-500 mt-0.5 gap-1">
+            <span class="hover:underline cursor-pointer">{{post.user.name}}</span>
+            <span>&middot;</span>
+            <span class="hover:underline cursor-pointer">{{post.createdAt}}</span>
+            <span>&middot;</span>
+
+            <div
+              class="p-0 w-fit items-center bg-neutral-secondary-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
+            >
+              <select
+                class="border-none bg-transparent cursor-pointer ring-0 py-0 px-2 text-xs"
+              >
+                <option value="public">public</option>
+                <option value="following">followers</option>
+                <option value="only_me">only me</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+           <div class="relative group">
+          <button
+            id="dropdownMenuIconButton"
+            data-dropdown-toggle="dropdownDots"
+            class="text-heading bg-neutral-primary box-border border border-transparent hover:bg-neutral-secondary-medium focus:ring-4 focus:ring-neutral-tertiary font-medium leading-5 rounded-base text-sm p-2 focus:outline-none"
+            type="button"
+          >
+            <svg
+              class="w-6 h-6"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-width="3"
+                d="M12 6h.01M12 12h.01M12 18h.01"
+              />
+            </svg>
+          </button>
+
+          <!-- Dropdown menu -->
+          <div
+            id="dropdownDots"
+            class="z-30 hidden group-hover:block absolute bg-neutral-primary-medium border border-default-medium rounded-base shadow-lg w-44"
+          >
+            <ul
+              class="p-2 text-sm text-body font-medium"
+              aria-labelledby="dropdownMenuIconButton"
+            >
+              <li>
+                <button
+                type="button"
+                (click)="toggleSavePost(post._id)"
+                [disabled]="savingPostId() !== null"
+                class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+              >
+                <i class="fa-regular fa-bookmark me-2"></i>
+                {{ savingPostId() === post._id ? 'Saving...' : 'Save Post' }}
+              </button>
+
+              @if (post.user._id == loggedUserData()._id) {
+                <button
+                  type="button"
+                  (click)="startEdit(post)"
+                  class="inline-flex items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                >
+                  <i class="fa-regular fa-pen-to-square me-2"></i>
+                  Edit Post
+                </button>
+
+                <button
+                  type="button"
+                  (click)="deletePost(post._id)"
+                  class="inline-flex text-red-700 items-center w-full p-2 hover:bg-neutral-tertiary-medium hover:text-heading rounded"
+                >
+                  <i class="fa-regular fa-trash-can me-2"></i>
+                  Delete Post
+                </button>
+              }
+              </li>
+            </ul>
+          </div>
+        </div>
+    </div>
+
+    <!-- post content  -->
+    <div class="text-[15px] text-slate-900 mb-4">
+      <p>{{post.body}}</p>
+      <img
+        [src]="post.image"
+        class="w-full max-h-90 object-cover rounded shadow mt-2"
+        alt=""
+      />
+    </div>
+
+@if (editingPostId() === post._id) {
+  <form
+    (ngSubmit)="updatePost(post._id)"
+    class="my-4 p-4 rounded-xl border border-slate-200 space-y-3"
+  >
+    <textarea
+      [formControl]="editBody"
+      rows="4"
+      class="w-full rounded-lg border border-slate-300 p-3 focus:outline-none focus:border-blue-500"
+      placeholder="Edit your post..."
+    ></textarea>
+
+    @if (editBody.touched && editBody.invalid) {
+      <p class="text-sm text-red-600">
+        Post content is required.
+      </p>
+    }
+
+    <label class="block text-sm font-semibold text-slate-600">
+      Change image (optional)
+    </label>
+
+    <input
+      type="file"
+      accept="image/*"
+      (change)="onEditImageSelected($event)"
+      class="block w-full text-sm"
+    />
+
+    @if (editImage) {
+      <p class="text-sm text-slate-500">
+        {{ editImage.name }}
+      </p>
+    }
+
+    <div class="flex gap-2">
+      <button
+      type="button"
+      (click)="updatePost(post._id)"
+      [disabled]="updatingPost()"
+      class="rounded-lg bg-blue-600 px-4 py-2 text-white"
+    >
+      {{ updatingPost() ? 'Updating...' : 'Save Changes' }}
+    </button>
+
+      <button
+        type="button"
+        (click)="cancelEdit()"
+        class="rounded-lg bg-slate-100 px-4 py-2 text-slate-700"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+}
+
+
+    <!-- like share comments  counts & view details -->
+    <div class="flex items-center justify-between text-[13px] text-slate-500 mb-3 px-1">
+      <div class="flex items-center gap-1.5 cursor-pointer hover:underline">
+        <div
+          class="w-5 h-5 rounded-full bg-blue-500 text-white flex items-center justify-center text-2xs"
+        >
+          <i class="fa-solid fa-thumbs-up"></i>
+        </div>
+        <span>{{post.likesCount}}</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="cursor-pointer hover:underline">{{post.sharesCount}} share</span>
+        <button #commentButton  class="cursor-pointer hover:underline">{{post.commentsCount}} comments</button>
+        <button [routerLink]="['/post-details',post._id]" class="font-semibold cursor-pointer text-blue-600 hover:underline">
+          View details
+        </button>
+      </div>
+    </div>
+
+    <hr class="border-t border-slate-200 mb-1" />
+
+    <!-- buttons like - comment - share -->
+    <div class="flex items-center justify-between px-1 py-1">
+
+
+      <button
+      type="button"
+      (click)="likePost(post)"
+      [disabled]="likingPostId() === post.id"
+      class="flex-1 cursor-pointer flex items-center justify-center gap-2 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors disabled:opacity-50"
+      [class.text-blue-600]="post.isLiked === true"
+      [class.text-slate-600]="post.isLiked !== true"
+    >
+      <i
+        class="text-lg"
+        [class.fa-solid]="post.isLiked === true"
+        [class.fa-regular]="post.isLiked !== true"
+        [class.fa-thumbs-up]="true"
+      ></i>
+      {{ post.isLiked === true ? 'Liked' : 'Like' }}
+    </button>
+
+
+      <button #commentButton
+        class="flex-1 flex cursor-pointer items-center justify-center gap-2 text-slate-600 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors"
+      >
+        <i class="fa-regular fa-message text-lg"></i>
+        Comment
+      </button>
+      <button
+        type="button"
+        (click)="sharePost(post.id)"
+        class="flex-1 flex cursor-pointer items-center justify-center gap-2 text-slate-600 font-semibold text-[14px] hover:bg-slate-50 py-2 rounded-lg transition-colors"
+      >
+        <i class="fa-solid fa-share text-lg"></i>
+        Share
+      </button>
+    </div>
+
+    <hr class="border-t border-slate-200 mt-1 mb-4" />
+    <!-- displaycomments -->
+@defer (on interaction(commentButton)) {
+  <app-comments [PostId]="post._id"></app-comments>
+}
+  </div>
+
+
+}
+<div class="flex items-center justify-center gap-4 py-6">
+  <button
+  (click)="previousPage()"
+  [disabled]="currentPage() === 1"
+  class="rounded-lg bg-blue-600 cursor-pointer px-4 py-2 text-white
+  disabled:cursor-not-allowed disabled:opacity-40"
+  >
+  pevious
+  </button>
+  <span class="font-semibold text-slate-700">
+    page{{currentPage()}} of {{totalPages()}}
+  </span>
+  <button
+  (click)="nextPage()"
+  [disabled]="currentPage() === totalPages() "
+  class="rounded-lg bg-blue-600 cursor-pointer px-4 py-2 text-white
+  disabled:cursor-not-allowed disabled:opacity-40"
+  >
+  next
+  </button>
+</div>

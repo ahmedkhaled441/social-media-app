@@ -1,0 +1,169 @@
+<section
+  class="border border-slate-200 rounded-[16px] p-4 bg-white"
+  aria-label="Comments"
+>
+  <!-- Comments Header -->
+  <div class="flex items-center gap-2 mb-4">
+    <h3 class="font-bold text-[15px] text-slate-900">
+      Comments
+    </h3>
+
+    <span
+      class="bg-blue-100 text-blue-600 text-[12px] font-bold px-2 py-0.5 rounded-full"
+    >
+      {{ postComments().length }}
+    </span>
+  </div>
+
+  <!-- Existing Comments -->
+  @for (comment of postComments(); track comment._id) {
+    <div class="flex gap-2 mb-4">
+      <img
+        [src]="comment.commentCreator.photo "
+        [alt]="comment.commentCreator.name"
+        class="w-8 h-8 rounded-full object-cover shrink-0 mt-1"
+      />
+
+      <div class="flex-1 min-w-0">
+        @if (editingCommentId() === comment._id) {
+          <div class="bg-slate-100 rounded-2xl p-3">
+            <textarea
+              [ngModel]="editContent()"
+              (ngModelChange)="editContent.set($event)"
+              name="editContent"
+              class="w-full rounded-lg border border-slate-300 p-2 text-sm outline-none focus:border-blue-400"
+              rows="3"
+            ></textarea>
+
+            <div class="flex gap-2 mt-2">
+              <button
+                type="button"
+                (click)="updateComment(comment._id)"
+                [disabled]="actionLoading() || !editContent().trim()"
+                class="bg-blue-500 text-white text-xs font-semibold px-3 py-2 rounded-lg disabled:opacity-50"
+              >
+                Save
+              </button>
+
+              <button
+                type="button"
+                (click)="cancelEdit()"
+                [disabled]="actionLoading()"
+                class="bg-white border border-slate-300 text-slate-600 text-xs font-semibold px-3 py-2 rounded-lg"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="bg-slate-100 rounded-2xl rounded-tl-none px-3.5 py-2.5 inline-block max-w-full">
+            <p class="text-[13px] font-bold text-slate-900">
+              {{ comment.commentCreator.name }}
+            </p>
+
+            <p class="text-[12px] text-slate-500 mb-1">
+              {{ comment.commentCreator.username }}
+            </p>
+
+            <p class="text-[14px] text-slate-800 break-words">
+              {{ comment.content }}
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3 mt-1 ml-2 text-xs text-slate-500">
+            <span>{{ comment.createdAt }}</span>
+
+            <button
+              type="button"
+              (click)="startEdit(comment)"
+              class="hover:text-blue-600"
+            >
+              Edit
+            </button>
+
+            <button
+              type="button"
+              (click)="deleteComment(comment._id)"
+              [disabled]="actionLoading()"
+              class="hover:text-red-600 disabled:opacity-50"
+            >
+              Delete
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (msgError()) {
+    <p class="text-red-500 text-sm mt-2">{{ msgError() }}</p>
+  }
+
+<!-- Create Comment -->
+<div class="flex gap-2 mt-4">
+  <img
+    [src]="loggedUserData().photo"
+    [alt]="loggedUserData().name"
+    class="w-8 h-8 rounded-full object-cover shrink-0 mt-1 bg-slate-100 border border-slate-50"
+  />
+    <form
+      (ngSubmit)="createComment()"
+      class="flex-1 bg-slate-100 border border-transparent focus-within:border-blue-300 focus-within:ring-4 focus-within:ring-blue-50 focus-within:bg-white transition-all rounded-[20px] p-2 flex flex-col"
+    >
+      <textarea
+        [ngModel]="commentContent()"
+        (ngModelChange)="commentContent.set($event)"
+        name="content"
+        class="w-full bg-transparent border-none text-[14px] text-slate-800 placeholder-slate-500 resize-none outline-none px-2 pt-1 pb-3 min-h-[60px]"
+        placeholder="Write a comment..."
+      ></textarea>
+
+      <div class="flex items-center justify-between px-1">
+        <div class="flex items-center gap-1">
+          <input
+            #fileInput
+            type="file"
+            id="commentFile"
+            accept="image/*,video/*"
+            class="hidden"
+            (change)="onFileChange($event)"
+          />
+
+          <label
+            for="commentFile"
+            class="flex cursor-pointer items-center gap-2 text-slate-600 hover:bg-slate-50 px-2 py-1.5 rounded-lg transition-colors"
+          >
+            <i class="fa-regular fa-image text-[#22c55e] text-[1.1rem]"></i>
+            <span class="text-[14px] font-semibold">
+              Photo/video
+            </span>
+          </label>
+
+          @if (selectedFile()) {
+            <span class="text-xs text-slate-500">
+              {{ selectedFile()?.name }}
+            </span>
+          }
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="loading() || (!commentContent().trim() && !selectedFile())"
+          class="w-8 h-8 rounded-full bg-blue-400 hover:bg-blue-500 text-white flex items-center justify-center transition-colors disabled:opacity-50"
+        >
+          @if (loading()) {
+            <i class="fa-solid fa-spinner fa-spin text-[13px]"></i>
+          } @else {
+            <i class="fa-solid fa-paper-plane text-[13px]"></i>
+          }
+        </button>
+      </div>
+
+      @if (msgError()) {
+        <p class="text-red-500 text-sm mt-2 px-2">
+          {{ msgError() }}
+        </p>
+      }
+    </form>
+  </div>
+</section>
